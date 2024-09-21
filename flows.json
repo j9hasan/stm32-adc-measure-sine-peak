@@ -64,7 +64,7 @@
         "frequencyType": "0",
         "snapshotheader": "",
         "mode": "direct",
-        "lastImportedTime": 1726907419589,
+        "lastImportedTime": 1726916667172,
         "openStatus": true,
         "x": 330,
         "y": 120,
@@ -170,12 +170,13 @@
         "expressions": [],
         "statistics": [],
         "logmode": "full",
-        "logformat": "csv",
+        "logformat": "stcm",
         "x": 390,
         "y": 280,
         "wires": [
             [
-                "f2ab8bd3341c0d27"
+                "f2ab8bd3341c0d27",
+                "d9d5fb6d1ba9a7dd"
             ],
             []
         ]
@@ -196,6 +197,24 @@
         "name": "",
         "x": 530,
         "y": 160,
+        "wires": []
+    },
+    {
+        "id": "d9d5fb6d1ba9a7dd",
+        "type": "ui_chartst",
+        "z": "95917ba6a6e05525",
+        "group": "f9c34dde.1e2f4",
+        "name": "myChart",
+        "order": 4,
+        "width": 15,
+        "height": 9,
+        "chartType": "line",
+        "curveType": "linear",
+        "duration": "1",
+        "ymin": "",
+        "ymax": "",
+        "x": 680,
+        "y": 440,
         "wires": []
     },
     {
@@ -240,17 +259,23 @@
         "exefolder": "C:\\Users\\jubaid_h\\STM32CubeIDE\\workspace_1.15.0\\stm32-adc-dma\\Debug",
         "exevariablelist": [
             {
-                "address": "0x08002dcc",
+                "address": "0x200000a4",
+                "name": "adcValue",
+                "type": 5,
+                "checked": true
+            },
+            {
+                "address": "0x08002df4",
                 "name": "AHBPrescTable[0]",
                 "type": 1
             },
             {
-                "address": "0x08002ddc",
+                "address": "0x08002e04",
                 "name": "APBPrescTable[0]",
                 "type": 1
             },
             {
-                "address": "0x200000b5",
+                "address": "0x200000bc",
                 "name": "consecutiveCount",
                 "type": 1
             },
@@ -385,12 +410,13 @@
                 "type": 2
             },
             {
-                "address": "0x200000b4",
+                "address": "0x200000be",
                 "name": "loadShedding",
-                "type": 1
+                "type": 1,
+                "checked": true
             },
             {
-                "address": "0x200000a8",
+                "address": "0x200000b0",
                 "name": "maxVoltage",
                 "type": 9
             },
@@ -400,27 +426,32 @@
                 "type": 9
             },
             {
-                "address": "0x200000ac",
+                "address": "0x200000a8",
+                "name": "newSampleReady",
+                "type": 1
+            },
+            {
+                "address": "0x200000bd",
+                "name": "outOfRangeCount",
+                "type": 1,
+                "checked": true
+            },
+            {
+                "address": "0x200000b4",
                 "name": "peakVoltage",
                 "type": 9,
                 "checked": true
             },
             {
-                "address": "0x200000b8",
-                "name": "raw",
-                "type": 5,
+                "address": "0x200000ac",
+                "name": "rawVoltage",
+                "type": 9,
                 "checked": true
             },
             {
-                "address": "0x200000a4",
-                "name": "rawVoltage",
-                "type": 9,
-                "checked": false
-            },
-            {
-                "address": "0x200000b0",
+                "address": "0x200000b8",
                 "name": "samples",
-                "type": 5
+                "type": 6
             },
             {
                 "address": "0x20000004",
@@ -428,7 +459,7 @@
                 "type": 5
             },
             {
-                "address": "0x200000bc",
+                "address": "0x200000c0",
                 "name": "uwTick",
                 "type": 5
             },
@@ -445,8 +476,8 @@
         ],
         "expand": false,
         "filename": "stm32-adc-dma.elf",
-        "exeModifiedTime": 1726907321351,
-        "configLastUpdate": 1726907419236
+        "exeModifiedTime": 1726916623636,
+        "configLastUpdate": 1726916666833
     },
     {
         "id": "17d09b07.741a55",
