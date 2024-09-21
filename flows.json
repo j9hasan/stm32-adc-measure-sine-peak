@@ -1,0 +1,459 @@
+[
+    {
+        "id": "95917ba6a6e05525",
+        "type": "tab",
+        "label": "Basic_Flow",
+        "disabled": false,
+        "info": "# Basic flow to start with STM32CubeMonitor."
+    },
+    {
+        "id": "f2ab8bd3341c0d27",
+        "type": "ui_chartst",
+        "z": "95917ba6a6e05525",
+        "group": "f9c34dde.1e2f4",
+        "name": "myChart",
+        "order": 4,
+        "width": 15,
+        "height": 9,
+        "chartType": "line",
+        "curveType": "linear",
+        "duration": "1",
+        "ymin": "",
+        "ymax": "",
+        "x": 580,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "d35cc8143a451b5d",
+        "type": "acquisition out",
+        "z": "95917ba6a6e05525",
+        "name": "myProbe_Out",
+        "probeconfig": "be01af95fac9e2a5",
+        "x": 540,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "41cc7322c004daa1",
+        "type": "acquisition in",
+        "z": "95917ba6a6e05525",
+        "name": "myProbe_In",
+        "probeconfig": "71a0b926218d4ded",
+        "x": 130,
+        "y": 280,
+        "wires": [
+            [
+                "4357c5a95c89b968"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "8433cd41a0189eea",
+        "type": "variables",
+        "z": "95917ba6a6e05525",
+        "groupname": "myVariables",
+        "accesspoint": 0,
+        "execonfig": "214ee258e21d70de",
+        "variablelist": [],
+        "triggerstartmode": "manual",
+        "triggername": "peakVoltage",
+        "triggerthreshold": "30000",
+        "frequency": "",
+        "frequencyType": "0",
+        "snapshotheader": "",
+        "mode": "direct",
+        "lastImportedTime": 1726907419589,
+        "openStatus": true,
+        "x": 330,
+        "y": 120,
+        "wires": [
+            [
+                "d35cc8143a451b5d"
+            ],
+            [
+                "038d9b20c95ed723"
+            ]
+        ]
+    },
+    {
+        "id": "3bdd4c000f5c69fa",
+        "type": "ui_button",
+        "z": "95917ba6a6e05525",
+        "name": "",
+        "group": "f9c34dde.1e2f4",
+        "order": 3,
+        "width": 5,
+        "height": 1,
+        "passthru": false,
+        "label": "Clear Graphs",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "clear",
+        "topicType": "str",
+        "x": 430,
+        "y": 380,
+        "wires": [
+            [
+                "f2ab8bd3341c0d27"
+            ]
+        ]
+    },
+    {
+        "id": "ab50aab560dea3db",
+        "type": "ui_button",
+        "z": "95917ba6a6e05525",
+        "name": "",
+        "group": "f9c34dde.1e2f4",
+        "order": 1,
+        "width": 5,
+        "height": 1,
+        "passthru": false,
+        "label": "START Acquisition",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "start",
+        "topicType": "str",
+        "x": 110,
+        "y": 80,
+        "wires": [
+            [
+                "8433cd41a0189eea"
+            ]
+        ]
+    },
+    {
+        "id": "6cb7f21521e10bae",
+        "type": "ui_button",
+        "z": "95917ba6a6e05525",
+        "name": "",
+        "group": "f9c34dde.1e2f4",
+        "order": 2,
+        "width": 5,
+        "height": 1,
+        "passthru": true,
+        "label": "STOP Acquisition",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "stop",
+        "topicType": "str",
+        "x": 110,
+        "y": 160,
+        "wires": [
+            [
+                "8433cd41a0189eea"
+            ]
+        ]
+    },
+    {
+        "id": "4357c5a95c89b968",
+        "type": "processing",
+        "z": "95917ba6a6e05525",
+        "groupname": "myVariables",
+        "groupid": "8433cd41a0189eea",
+        "expressions": [],
+        "statistics": [],
+        "logmode": "full",
+        "logformat": "csv",
+        "x": 390,
+        "y": 280,
+        "wires": [
+            [
+                "f2ab8bd3341c0d27"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "038d9b20c95ed723",
+        "type": "ui_toast",
+        "z": "95917ba6a6e05525",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "topic": "",
+        "name": "",
+        "x": 530,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "f9c34dde.1e2f4",
+        "type": "ui_group",
+        "name": "Chart",
+        "tab": "17d09b07.741a55",
+        "order": 1,
+        "disp": true,
+        "width": 15,
+        "collapse": false
+    },
+    {
+        "id": "be01af95fac9e2a5",
+        "type": "probe",
+        "probeid": "74004300160000383750534E",
+        "probename": "ST-Link v2 74004300160000383750534E",
+        "protocol": "SWD",
+        "frequency": "1.8 MHz - Default",
+        "probeproperty": "{\"SWD\":[\"4.6 MHz\",\"1.8 MHz - Default\",\"950 kHz\",\"400 kHz\",\"150 kHz\"],\"JTAG\":[\"18 MHz\",\"9 MHz\",\"4.5 MHz\",\"2.25 MHz\",\"1.12 MHz - Default\",\"560 kHz\",\"280 kHz\",\"140 kHz\"]}",
+        "probeversion": "ST Link firmware version V2.J44",
+        "connectionType": "p2p",
+        "nickname": "probeOut"
+    },
+    {
+        "id": "71a0b926218d4ded",
+        "type": "probe",
+        "probeid": "74004300160000383750534E",
+        "probename": "ST-Link v2 74004300160000383750534E",
+        "protocol": "SWD",
+        "frequency": "1.8 MHz - Default",
+        "probeproperty": "{\"SWD\":[\"4.6 MHz\",\"1.8 MHz - Default\",\"950 kHz\",\"400 kHz\",\"150 kHz\"],\"JTAG\":[\"18 MHz\",\"9 MHz\",\"4.5 MHz\",\"2.25 MHz\",\"1.12 MHz - Default\",\"560 kHz\",\"280 kHz\",\"140 kHz\"]}",
+        "probeversion": "ST Link firmware version V2.J44",
+        "connectionType": "p2p",
+        "nickname": "myProbeIn"
+    },
+    {
+        "id": "214ee258e21d70de",
+        "type": "exe-config",
+        "name": "adcVars",
+        "exefile": "C:\\Users\\jubaid_h\\STM32CubeIDE\\workspace_1.15.0\\stm32-adc-dma\\Debug\\stm32-adc-dma.elf",
+        "exefolder": "C:\\Users\\jubaid_h\\STM32CubeIDE\\workspace_1.15.0\\stm32-adc-dma\\Debug",
+        "exevariablelist": [
+            {
+                "address": "0x08002dcc",
+                "name": "AHBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x08002ddc",
+                "name": "APBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x200000b5",
+                "name": "consecutiveCount",
+                "type": 1
+            },
+            {
+                "address": "0x2000004c",
+                "name": "hadc1.DMA_Handle",
+                "type": 5
+            },
+            {
+                "address": "0x20000058",
+                "name": "hadc1.ErrorCode",
+                "type": 5
+            },
+            {
+                "address": "0x20000038",
+                "name": "hadc1.Init.ContinuousConvMode",
+                "type": 2
+            },
+            {
+                "address": "0x20000030",
+                "name": "hadc1.Init.DataAlign",
+                "type": 5
+            },
+            {
+                "address": "0x20000040",
+                "name": "hadc1.Init.DiscontinuousConvMode",
+                "type": 2
+            },
+            {
+                "address": "0x20000048",
+                "name": "hadc1.Init.ExternalTrigConv",
+                "type": 5
+            },
+            {
+                "address": "0x2000003c",
+                "name": "hadc1.Init.NbrOfConversion",
+                "type": 5
+            },
+            {
+                "address": "0x20000044",
+                "name": "hadc1.Init.NbrOfDiscConversion",
+                "type": 5
+            },
+            {
+                "address": "0x20000034",
+                "name": "hadc1.Init.ScanConvMode",
+                "type": 5
+            },
+            {
+                "address": "0x2000002c",
+                "name": "hadc1.Instance",
+                "type": 5
+            },
+            {
+                "address": "0x20000050",
+                "name": "hadc1.Lock",
+                "type": 2
+            },
+            {
+                "address": "0x20000054",
+                "name": "hadc1.State",
+                "type": 5
+            },
+            {
+                "address": "0x20000078",
+                "name": "htim3.Channel",
+                "type": 2
+            },
+            {
+                "address": "0x2000009e",
+                "name": "htim3.ChannelNState[0]",
+                "type": 2
+            },
+            {
+                "address": "0x2000009a",
+                "name": "htim3.ChannelState[0]",
+                "type": 2
+            },
+            {
+                "address": "0x200000a2",
+                "name": "htim3.DMABurstState",
+                "type": 2
+            },
+            {
+                "address": "0x2000007c",
+                "name": "htim3.hdma[0]",
+                "type": 5
+            },
+            {
+                "address": "0x20000074",
+                "name": "htim3.Init.AutoReloadPreload",
+                "type": 5
+            },
+            {
+                "address": "0x2000006c",
+                "name": "htim3.Init.ClockDivision",
+                "type": 5
+            },
+            {
+                "address": "0x20000064",
+                "name": "htim3.Init.CounterMode",
+                "type": 5
+            },
+            {
+                "address": "0x20000068",
+                "name": "htim3.Init.Period",
+                "type": 5
+            },
+            {
+                "address": "0x20000060",
+                "name": "htim3.Init.Prescaler",
+                "type": 5
+            },
+            {
+                "address": "0x20000070",
+                "name": "htim3.Init.RepetitionCounter",
+                "type": 5
+            },
+            {
+                "address": "0x2000005c",
+                "name": "htim3.Instance",
+                "type": 5
+            },
+            {
+                "address": "0x20000098",
+                "name": "htim3.Lock",
+                "type": 2
+            },
+            {
+                "address": "0x20000099",
+                "name": "htim3.State",
+                "type": 2
+            },
+            {
+                "address": "0x200000b4",
+                "name": "loadShedding",
+                "type": 1
+            },
+            {
+                "address": "0x200000a8",
+                "name": "maxVoltage",
+                "type": 9
+            },
+            {
+                "address": "0x20000000",
+                "name": "minVoltage",
+                "type": 9
+            },
+            {
+                "address": "0x200000ac",
+                "name": "peakVoltage",
+                "type": 9,
+                "checked": true
+            },
+            {
+                "address": "0x200000b8",
+                "name": "raw",
+                "type": 5,
+                "checked": true
+            },
+            {
+                "address": "0x200000a4",
+                "name": "rawVoltage",
+                "type": 9,
+                "checked": false
+            },
+            {
+                "address": "0x200000b0",
+                "name": "samples",
+                "type": 5
+            },
+            {
+                "address": "0x20000004",
+                "name": "SystemCoreClock",
+                "type": 5
+            },
+            {
+                "address": "0x200000bc",
+                "name": "uwTick",
+                "type": 5
+            },
+            {
+                "address": "0x2000000c",
+                "name": "uwTickFreq",
+                "type": 2
+            },
+            {
+                "address": "0x20000008",
+                "name": "uwTickPrio",
+                "type": 5
+            }
+        ],
+        "expand": false,
+        "filename": "stm32-adc-dma.elf",
+        "exeModifiedTime": 1726907321351,
+        "configLastUpdate": 1726907419236
+    },
+    {
+        "id": "17d09b07.741a55",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
