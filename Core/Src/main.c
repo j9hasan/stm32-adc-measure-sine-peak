@@ -44,6 +44,23 @@ ADC_HandleTypeDef hadc1;
 
 TIM_HandleTypeDef htim3;
 
+volatile uint32_t adcValue = 0;
+volatile bool newSampleReady = false;
+
+float rawVoltage = 0.0f;
+float maxVoltage = 0.0f;
+float minVoltage = 3.3f;
+float peakVoltage = 0.0f;
+const int MIN_THRES = 1770;
+const int MAX_THRES = 1860;
+int samples = 0;
+
+uint8_t consecutiveCount = 0;
+const int CONSECUTIVE_COUNT_THRESHOLD = 5;
+uint8_t outOfRangeCount = 0;
+const uint8_t HYSTERESIS_COUNT = 5;
+bool loadShedding = false;
+
 /* USER CODE BEGIN PV */
 //uint16_t raw = 0;
 /* USER CODE END PV */
@@ -98,49 +115,66 @@ int main(void) {
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
+
 	while (1) {
-		//Get ADC value
-//	  HAL_ADC_Start(&hadc1);
-//	  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-//	  raw = HAL_ADC_GetValue(&hadc1);
 
-//		uint32_t startTime = HAL_GetTick();
-//		float peakDeviation = 0;  // Track the maximum deviation from 1.5V
-//		float rawVoltage;
-//		float currentDeviation;
-//		int samples = 0;
-//
-//		while ((HAL_GetTick() - startTime) < 20) {  // Sample for 10 ms
-//			HAL_ADC_Start(&hadc1);
-//			HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-//			uint32_t raw = HAL_ADC_GetValue(&hadc1);
-//
-//			// Convert raw ADC value to voltage
-//			rawVoltage = (raw * 3.3) / 4095.0;
-//
-//			// Calculate deviation from the 1.5V offset (handles both positive and negative cycles)
-//			currentDeviation = fabs(rawVoltage - 1.5);
-//
-//			// Track the maximum deviation
-//			if (currentDeviation > peakDeviation) {
-//				peakDeviation = currentDeviation;
-//			}
-//
-//			samples++;
-//		}
-//
-//		uint32_t endTime = HAL_GetTick();
-//		uint32_t elapsedTime = endTime - startTime;
-//
-//		// Calculate the peak voltage based on the maximum deviation
-//		float peakVoltage = 1.5 + peakDeviation;
+		if (newSampleReady) {
+			newSampleReady = false;
 
-		/* USER CODE END WHILE */
+			rawVoltage = (adcValue * 3.40f) / 4095.0f;
 
-		/* USER CODE BEGIN 3 */
+			// Check if the voltage is within the range for load shedding detection
+			if (adcValue >= MIN_THRES && adcValue <= MAX_THRES) {
+				consecutiveCount++;
+				outOfRangeCount = 0;
+
+				if (consecutiveCount >= CONSECUTIVE_COUNT_THRESHOLD) {
+					loadShedding = true;
+				}
+			} else {
+				// Increment out-of-range count
+				outOfRangeCount++;
+
+				// Only reset load shedding if voltage is out of range for multiple consecutive samples
+				if (outOfRangeCount >= HYSTERESIS_COUNT) {
+					consecutiveCount = 0;
+					loadShedding = false;
+				}
+			}
+
+			// Track the minimum and maximum voltage
+			if (rawVoltage > maxVoltage) {
+				maxVoltage = rawVoltage;  // Track maximum voltage
+			}
+			if (rawVoltage < minVoltage) {
+				minVoltage = rawVoltage;  // Track minimum voltage
+			}
+
+			// Increment sample count
+			samples++;
+
+
+			if (samples >= 100) {
+				// Calculate the peak-to-peak voltage and reset for the next cycle
+				peakVoltage = maxVoltage - minVoltage;
+
+				// Print or log the peak voltage (for debugging)
+				// printf("Peak Voltage: %.3f\n", peakVoltage);
+
+				// Reset for the next cycle
+				samples = 0;
+				maxVoltage = 0.0f;  // Reset max voltage
+				minVoltage = 3.3f;  // Reset min voltage
+			}
+		}
+
+		// Other non-time-critical code can run here...
 	}
-	/* USER CODE END 3 */
+	/* USER CODE END WHILE */
+
+	/* USER CODE BEGIN 3 */
 }
+/* USER CODE END 3 */
 
 /**
  * @brief System Clock Configuration
@@ -287,81 +321,15 @@ static void MX_GPIO_Init(void) {
 
 /* USER CODE BEGIN 4 */
 
-// Global variables
-float rawVoltage = 0.0f;
-float maxVoltage = 0.0f;
-float minVoltage = 3.3f;  // Initialize to the highest possible ADC voltage
-float peakVoltage = 0.0f;
-uint32_t samples = 0;
-bool loadShedding = false;
-
-uint8_t consecutiveCount = 0;     // Counter for consecutive voltage range checks
-const int CONSECUTIVE_COUNT_THRESHOLD = 3;
-uint8_t outOfRangeCount = 0;      // Counter for consecutive out-of-range checks (hysteresis)
-const uint8_t HYSTERESIS_COUNT = 3; // Number of consecutive out-of-range samples before disabling load shedding
-
-const float MIN_VOLTAGE = 1.54f;
-const float MAX_VOLTAGE = 1.65f;
-const int MIN_THRES = 1770;
-const int MAX_THRES = 1860;
-
-uint32_t raw = 0;
-
 // Triggering every 200us
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if (htim->Instance == TIM3) {
 		HAL_ADC_Start(&hadc1);
 		HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-		raw = HAL_ADC_GetValue(&hadc1);  // Read ADC value
-
-		rawVoltage = (raw * 3.40f) / 4095.0f;
-
-		// Check if the voltage is within the range for load shedding detection
-		if (raw >= MIN_THRES && raw <= MAX_THRES) {
-			consecutiveCount++;
-			outOfRangeCount = 0;
-
-			if (consecutiveCount >= CONSECUTIVE_COUNT_THRESHOLD) {
-				loadShedding = true;
-			}
-		} else {
-			// Increment out-of-range count
-			outOfRangeCount++;
-
-			// Only reset load shedding if voltage is out of range for multiple consecutive samples
-			if (outOfRangeCount >= HYSTERESIS_COUNT) {
-				consecutiveCount = 0;
-				loadShedding = false;
-			}
-		}
-
-		// Track the minimum and maximum voltage
-		if (rawVoltage > maxVoltage) {
-			maxVoltage = rawVoltage;  // Track maximum voltage
-		}
-		if (rawVoltage < minVoltage) {
-			minVoltage = rawVoltage;  // Track minimum voltage
-		}
-
-		// Increment sample count
-		samples++;
-
-
-		if (samples >= 100) {
-			// Calculate the peak-to-peak voltage and reset for the next cycle
-			peakVoltage = maxVoltage - minVoltage;
-
-			// Print or log the peak voltage (for debugging)
-			// printf("Peak Voltage: %.3f\n", peakVoltage);
-
-			// Reset for the next cycle
-			samples = 0;
-			maxVoltage = 0.0f;  // Reset max voltage
-			minVoltage = 3.3f;  // Reset min voltage
-		}
+		adcValue = HAL_ADC_GetValue(&hadc1);  // Read ADC value
+		newSampleReady = true;  // Indicate that a new sample is ready
 	}
 }
-
 
 /* USER CODE END 4 */
 
