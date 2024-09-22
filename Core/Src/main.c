@@ -44,8 +44,10 @@ ADC_HandleTypeDef hadc1;
 
 TIM_HandleTypeDef htim3;
 
-#define MIN_FLAT_THRESHOLD 1770
-#define MAX_FLAT_THRESHOLD 1860
+#define MIN_FLAT_THRESHOLD 1770 //v
+#define MAX_FLAT_THRESHOLD 1860 //v
+//#define MIN_FLAT_THRESHOLD 1500
+//#define MAX_FLAT_THRESHOLD 2000
 #define MAX_SAMPLE 100
 #define MAX_CONSECUTIVE_COUNT 5
 
@@ -56,6 +58,7 @@ float rawVoltage = 0.0f;
 float maxVoltage = 0.0f;
 float minVoltage = 3.3f;
 float peakVoltage = 0.0f;
+uint16_t peakvInt = 0;
 
 int samples = 0; //l
 uint8_t consecutiveFlatCount = 0;
@@ -133,6 +136,7 @@ int main(void) {
 			if (samples >= MAX_SAMPLE) {
 
 				peakVoltage = maxVoltage - minVoltage;
+				peakvInt = 10 * peakVoltage;
 				// Reset for the next cycle
 				samples = 0;
 				maxVoltage = 0.0f;
@@ -298,14 +302,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if (htim->Instance == TIM3) {
 		HAL_ADC_Start(&hadc1);
 		HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-		adcValue = HAL_ADC_GetValue(&hadc1);  // Read ADC value
+		adcValue = HAL_ADC_GetValue(&hadc1);
 
 		//Load shedding detection by
 		//1. adc threshold for 1.5v - fast or
 		//2. peak voltage threshold, flat check - slow
 
-		if ((adcValue >= MIN_FLAT_THRESHOLD && adcValue <= MAX_FLAT_THRESHOLD)
-				|| peakVoltage < 0.5) {
+		if (peakvInt < 5
+				|| (adcValue >= MIN_FLAT_THRESHOLD
+						&& adcValue <= MAX_FLAT_THRESHOLD)) {
 			consecutiveFlatCount++;
 			consecutiveACCount = 0;
 
